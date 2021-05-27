@@ -10,7 +10,7 @@ public class OverUnderClassifier {
 	static Random random = new Random();
 
 	//Constants
-	static ArrayList<Player> allPlayers;
+	static ArrayList<Player> allPlayers= new ArrayList();
 
 	static int exampleCount;
 	static int featureCount;
@@ -29,38 +29,33 @@ public class OverUnderClassifier {
 	private static void classifyExamples(String data) throws FileNotFoundException {
 
 		//Populating stats of all players
-		allPlayers = loadPlayers("2018-2019-Player-Stats.txt");
+		loadPlayers("2018-2019-Player-Stats.txt");
 
 		ArrayList<Game> trainOver =  loadOvers("2018-2019-Box-Scores-train.txt");
 		ArrayList<Game> trainUnder =  loadUnders("2018-2019-Box-Scores-train.txt");
 
 
 	}
+	
 
 
 
-	private static ArrayList<Player> loadPlayers(String dataset) throws FileNotFoundException {
+	private static void loadPlayers(String dataset) throws FileNotFoundException {
 
-		Scanner scan = new Scanner(new File(data));
+		Scanner scan = new Scanner(new File(dataset));
 
 		//Because the data creates multiple rows if a player played for multiple teams that season
 		//we need to keep track of that and make sure we do not add the same player multiple times
-		Arraylist<String> duplicates = new ArrayList<String>();
+		ArrayList<String> duplicates = new ArrayList<String>();
 
 		while (scan.hasNextLine())
 		{
 			String playerLine = scan.nextLine();
-			String[] playerStats = playerLine.split(",");
-			
-			//cleaning the name to avoid dealing with accents, special characters, etc
-			playerStats[1].split("\\")[0].replace(" ","").replaceAll("\\p{Punct}", "");
-			playerStats[1] = Normalizer.normalize(playerStats[1], Normalizer.Form.NFD);
-			playerStats[1] = playerStats[1].replaceAll("[^\\p{ASCII}]", "");
-			playerStats[1] = playerStats[1].toLowerCase();
-			System.out.println(playerStats[1]);
+			String[] playerStats = playerLine.split("\t");
 
 			//Checking that we have not added the player already
 			if ((!duplicates.contains(playerStats[0])) &&(!playerStats[5].equals("0"))){
+				playerStats[1] = normalizeName(playerStats[1]);
 				allPlayers.add(new Player(playerStats));
 			}
 
@@ -70,6 +65,8 @@ public class OverUnderClassifier {
 				duplicates.add(playerStats[0]);
 			}
 		}
+		scan.close();
+
 
 	}
 
@@ -105,7 +102,25 @@ public class OverUnderClassifier {
 			System.out.println("");
 			
 		}
+		for (Player s : allPlayers)
+		{
+			System.out.print(s.getOPM());
+		}
 		scan.close();
 		return null;
+	}
+
+
+	//Cleaning the name to avoid dealing with accents, special characters, etc when mapping
+	//from other datasets
+	private static String normalizeName(String name){
+
+		name = name.replace(" ","").toLowerCase();
+		name = Normalizer.normalize(name, Normalizer.Form.NFD);
+		name = name.replaceAll("[^\\p{ASCII}]", "");
+		name = name.split("[^a-z0-9]")[0].replace(" ","").replaceAll("\\p{Punct}", "");
+
+		return name;
+
 	}
 }
