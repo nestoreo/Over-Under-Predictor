@@ -27,7 +27,9 @@ public class OverUnderClassifier {
 	static double exampleEntropy;
 
 	//training examples
-	static ArrayList<Game> trainExs;
+	static ArrayList<Example> trainExamples;
+	//
+	static double[] splitPoints;
 
 
 
@@ -70,10 +72,83 @@ public class OverUnderClassifier {
 			}
 			
 		}
+
+		//feature count
+		featureCount = trainingGames.get(0).getAllFeatures().size();
 		//updating entropy of training set
 		exampleEntropy = getEntropy((double)overExampleCount/(exampleCount));
 		System.out.println("exampleCount: "+exampleCount+" underCount: "+underExampleCount+" overCount: "+overExampleCount+" Entropy of Examples: "+exampleEntropy);
+		
+		System.out.println(trainingGames.get(0).getAllFeatures());
 
+		splitPoints = new double[featureCount];
+		for (int i=0; i<featureCount;i++)
+		{
+			splitPoints[i] = getBestSplitPoint(i,trainingGames);
+			System.out.println(getBestSplitPoint(i,trainingGames));
+		}
+
+
+
+		trainExamples = loadExamples(trainingGames);
+		
+
+		DecisionTree tree = new DecisionTree();
+
+		tree.train(trainExamples);
+
+		tree.print();
+
+		ArrayList<Game> testGames = loadGames("2018-2019-Box-Scores-test.txt");
+		for (Game game:testGames)
+		{
+			game.setAllFeatures();
+
+			//updating counts
+			if (game.getIsOver())
+			{
+				overExampleCount++;
+			}
+			else{
+				underExampleCount++;
+			}
+			
+		}
+		ArrayList<Example> testExamples = loadExamples(testGames);
+
+		int correctOver = 0;
+		int correctUnder = 0;
+
+		for (Example ex: testExamples)
+		{
+			if (tree.classify(ex))
+			{
+				if (ex.getLabel())
+					correctOver++;
+				else
+					correctUnder++;
+			}
+		}
+		System.out.println("Accuracy: "+((double)correctOver+correctUnder)/testExamples.size());
+	}
+
+	private static ArrayList<Example> loadExamples(ArrayList<Game> games)
+	{
+		ArrayList<Example> examples = new ArrayList<Example>();
+
+		for (int i=0;i<games.size();i++)
+		{
+			examples.add(new Example(featureCount));
+			examples.get(i).setLabel(games.get(i).getIsOver());
+			for(int j =0;j<featureCount;j++)
+			{
+				if (games.get(i).getTreeFeature(j)>splitPoints[j])
+					examples.get(i).setFeatureValue(j,true);
+				else
+					examples.get(i).setFeatureValue(j,false);
+			}
+		}
+		return examples;
 	}
 
 	private static double getBestSplitPoint(int feature, ArrayList<Game> games)
@@ -118,24 +193,44 @@ public class OverUnderClassifier {
 
 	private static double getRemainingEntropy(int feature, double splitPoint, ArrayList<Game> games){
 
-		//probability of being greater than split point at feature
-		double trueProbability = 0;
-
-		//probability of being less than the split point at feature
-		double falseProbability = 0;
-
 		ArrayList<Game> trueFeatures = new ArrayList<Game>();
 
 		ArrayList<Game> falseFeatures = new ArrayList<Game>();
 
+		int overTrueFeat = 0;
+		int overFalseFeat = 0;
+
 		for (Game game:games)
 		{
-			if (game.)
+			if (game.getTreeFeature(feature)>splitPoint)
+			{
+				trueFeatures.add(game);
+				if (game.getIsOver())
+				{
+					overTrueFeat++;
+				}
+			}
+			else{
+				falseFeatures.add(game);
+				if(game.getIsOver())
+				{
+					overFalseFeat++;
+				}
+			}
 		}
 
-		return 0.0;
-		
+		//probability of being greater than split point at feature
+		double trueProbability = trueFeatures.size()/exampleCount;
 
+		//probability of being less than the split point at feature
+		double falseProbability = falseFeatures.size()/exampleCount;
+
+
+		double entropyFeatTrue = getEntropy((double)overTrueFeat/trueFeatures.size());
+
+		double entropyFeatFalse = getEntropy((double)overFalseFeat/falseFeatures.size());
+
+		return trueProbability*entropyFeatTrue+falseProbability*entropyFeatFalse;
 
 	}
 
@@ -192,6 +287,7 @@ public class OverUnderClassifier {
 			
 		}
 
+		/*
 		for (Game g: allGames)
 		{
 			System.out.println("Home: "+g.getTeams()[0].getTeamName()+" vs. Away: "+g.getTeams()[1].getTeamName());
@@ -206,7 +302,9 @@ public class OverUnderClassifier {
 				System.out.println("Starter: "+player.getName());
 			}
 
-		}
+		}*/
+
+		
 		scan.close();
 		return allGames;
 	}
