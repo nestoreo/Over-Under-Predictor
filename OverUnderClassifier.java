@@ -17,11 +17,19 @@ public class OverUnderClassifier {
 	static ArrayList<Team> allTeams;
 	//number of training examples
 	static int exampleCount;
+	//number of training examples
+	static int overExampleCount;
+	//number of training examples
+	static int underExampleCount;
 	//number of features
 	static int featureCount;
+	//Entropy of the training examples
+	static double exampleEntropy;
 
 	//training examples
 	static ArrayList<Game> trainExs;
+
+
 
 
 	//processing data
@@ -43,20 +51,108 @@ public class OverUnderClassifier {
 
 		//Updating example count
 		exampleCount = trainingGames.size();
+		//updating overCount
+		overExampleCount=0;
+		//updating underCount
+		underExampleCount =0;
 
 		for (Game game:trainingGames)
 		{
 			game.setAllFeatures();
-			System.out.println(game.getAllFeatures());
+
+			//updating counts
+			if (game.getIsOver())
+			{
+				overExampleCount++;
+			}
+			else{
+				underExampleCount++;
+			}
+			
+		}
+		//updating entropy of training set
+		exampleEntropy = getEntropy((double)overExampleCount/(exampleCount));
+		System.out.println("exampleCount: "+exampleCount+" underCount: "+underExampleCount+" overCount: "+overExampleCount+" Entropy of Examples: "+exampleEntropy);
+
+	}
+
+	private static double getBestSplitPoint(int feature, ArrayList<Game> games)
+	{
+		int size = games.size();
+		for(int i = 0; i <size;i++)
+		{
+			for (int j=i+1;j<size;j++)
+			{
+				if (games.get(i).getTreeFeature(feature)>games.get(j).getTreeFeature(feature))
+				{
+					Game temp = games.get(i);
+					games.set(i,games.get(j));
+					games.set(j, temp);
+				}
+			}
+		}
+		double highestInfoGain = 0;
+		double bestSplit=0;
+		for (int i = 0; i<size-1;i++)
+		{
+			if (games.get(i).getTreeFeature(feature)!=games.get(i+1).getTreeFeature(feature))
+			{
+				double tempSplit = (games.get(i).getTreeFeature(feature)+games.get(i+1).getTreeFeature(feature))/2;
+
+				if (getInfoGain(feature,tempSplit,games)>highestInfoGain)
+				{
+					bestSplit = tempSplit;
+					highestInfoGain = getInfoGain(feature, bestSplit, games);
+					
+				}
+			}
+		}
+		return bestSplit;
+	}
+
+	private static double getInfoGain(int feature, double splitPoint, ArrayList<Game> games){
+
+		return exampleEntropy - getRemainingEntropy(feature,splitPoint, games);
+	}
+
+
+	private static double getRemainingEntropy(int feature, double splitPoint, ArrayList<Game> games){
+
+		//probability of being greater than split point at feature
+		double trueProbability = 0;
+
+		//probability of being less than the split point at feature
+		double falseProbability = 0;
+
+		ArrayList<Game> trueFeatures = new ArrayList<Game>();
+
+		ArrayList<Game> falseFeatures = new ArrayList<Game>();
+
+		for (Game game:games)
+		{
+			if (game.)
 		}
 
+		return 0.0;
+		
 
 
 	}
 
+	private static double log2(double d){
+		return Math.log(d)/Math.log(2);
+	}
 
+	private static double getEntropy(double probability){
+		//if the probability of yes is 0 or 1, it automatically returns 0 entropy
+		if (probability==0||probability==1)
+		{
+			return 0;
+		}
 
-
+		//else return the entropy
+		return -log2(probability)*(probability)-log2(1-probability)*(1-probability);
+	}
 
 
 

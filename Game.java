@@ -86,6 +86,11 @@ public class Game{
 		allFeatures.add(moneyLine);
 	}
 
+	public double getTreeFeature(int feature)
+	{
+		return allFeatures.get(feature);
+	}
+
 
 	//Returns the teams where index 0 is home team and index 1 is away team
 	public ArrayList<Double>  getAllFeatures()
