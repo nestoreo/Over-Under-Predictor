@@ -15,23 +15,22 @@ public class OverUnderClassifier {
 	static ArrayList<Player> allPlayers;
 	//All teams
 	static ArrayList<Team> allTeams;
-
-
-
+	//number of training examples
 	static int exampleCount;
+	//number of features
 	static int featureCount;
-	static double[] threshold;
 
 	//training examples
 	static ArrayList<Game> trainExs;
 
+
 	//processing data
 	public static void main(String[] args) throws FileNotFoundException {
 
-		classifyExamples("2018-2019-Box-Scores.txt");
+		classifyExamples();
 	}
 
-	private static void classifyExamples(String data) throws FileNotFoundException {
+	private static void classifyExamples() throws FileNotFoundException {
 
 		//Populating stats of all players
 		allPlayers = loadPlayers("2018-2019-Player-Stats.txt");
@@ -41,7 +40,26 @@ public class OverUnderClassifier {
 		
 		//Populating all games in the training set
 		ArrayList<Game> trainingGames = loadGames("2018-2019-Box-Scores-train.txt");
+
+		//Updating example count
+		exampleCount = trainingGames.size();
+
+		for (Game game:trainingGames)
+		{
+			game.setAllFeatures();
+			System.out.println(game.getAllFeatures());
+		}
+
+
+
 	}
+
+
+
+
+
+
+
 	
 	private static ArrayList<Game> loadGames(String data) throws FileNotFoundException {
 
@@ -65,20 +83,34 @@ public class OverUnderClassifier {
 				game[2*i]=gameSplit1[i];
 				game[2*i+1]=gameSplit2[i];
 			}
+
+			//Making sure that the overUnder did not equal the final score
+			double totalScore=Double.valueOf(game[20])+Double.valueOf(game[21]);
+			double overUnder = Double.valueOf(game[16]);
+			if (totalScore!=overUnder)
+			{
+				allGames.add(new Game(game, allPlayers, allTeams));
+			}
+
 			
-			allGames.add(new Game(game, allPlayers, allTeams));
+			
 		}
 
 		for (Game g: allGames)
 		{
 			System.out.println("Home: "+g.getTeams()[0].getTeamName()+" vs. Away: "+g.getTeams()[1].getTeamName());
-			System.out.println("Rest Day Combined: "+g.getRestDays());
+			System.out.println("Rest Days Average: "+g.getRestDays());
+			System.out.println("Moneyline: "+g.getMoneyLine());
+			System.out.println("isOver: "+g.getIsOver());
+			System.out.println("spread: "+g.getSpread());
+			System.out.println("OverUnder: "+g.getOverUnder());
+
 			for (Player player:g.getStarters())
 			{
 				System.out.println("Starter: "+player.getName());
 			}
-		}
 
+		}
 		scan.close();
 		return allGames;
 	}
@@ -163,7 +195,7 @@ public class OverUnderClassifier {
 		//Needed to replace accented characters with normal characters
 		name = Normalizer.normalize(name, Normalizer.Form.NFD);
 		//Replacing special character and removing the player id
-		name = name.replaceAll("[^\\p{ASCII}]", "").split("[^a-z0-9]")[0].replace(" ","").replaceAll("\\p{Punct}", "");
+		name = name.replaceAll("[^\\p{ASCII}]", "").replace("\\", "\t").split("\t")[0].replaceAll("\\p{Punct}", "");
 
 		return name;
 

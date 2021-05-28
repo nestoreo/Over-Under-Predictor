@@ -284,7 +284,7 @@
 217	Udonis Haslem\hasleud01	38	MIA	10	1	7.4	0.333	0.2	2.5	3.6	0.360	21.9	-8.4	-2.4
 218	Gordon Hayward\haywago01	28	BOS	72	18	25.9	0.527	3.4	11.5	15.6	0.575	19.0	0.4	0.4
 219	John Henson\hensojo01	28	MIL	14	0	13.4	0.545	1.0	5.6	17.1	0.553	18.6	0.4	2.1
-220	Juan Hernangómez\hernaju01	23	DEN	70	25	19.4	0.545	0.8	5.8	11.0	0.580	12.2	-0.9	-0.2
+220	Juancho Hernangómez\hernaju01	23	DEN	70	25	19.4	0.545	0.8	5.8	11.0	0.580	12.2	-0.9	-0.2
 221	Willy Hernangómez\hernawi01	24	CHO	58	3	14.0	0.544	1.0	7.3	20.4	0.587	22.1	1.1	-1.1
 222	Mario Hezonja\hezonma01	23	NYK	58	24	20.8	0.457	1.5	8.8	10.8	0.497	21.3	-3.5	-0.3
 223	Isaiah Hicks\hicksis01	24	NYK	3	0	10.7	0.500	0.7	4.0	17.4	0.588	15.0	-2.1	2.2
@@ -321,7 +321,7 @@
 248	Brandon Ingram\ingrabr01	21	LAL	52	52	33.8	0.518	3.0	18.3	13.4	0.555	23.2	-1.3	-0.7
 249	Kyrie Irving\irvinky01	26	BOS	67	67	33.0	0.557	6.9	23.8	24.3	0.592	29.6	6.0	1.1
 250	Jonathan Isaac\isaacjo01	21	ORL	75	64	26.6	0.499	1.1	9.6	13.0	0.537	16.3	-1.4	1.0
-251	Wesley Iwundu\iwundwe01	24	ORL	68	13	18.1	0.465	1.1	5.0	8.7	0.531	12.8	-3.8	0.6
+251	Wes Iwundu\iwundwe01	24	ORL	68	13	18.1	0.465	1.1	5.0	8.7	0.531	12.8	-3.8	0.6
 252	Demetrius Jackson\jacksde01	24	PHI	6	0	6.5	0.600	0.8	3.7	21.0	0.656	19.1	3.6	0.9
 253	Frank Jackson\jacksfr01	20	NOP	61	16	19.2	0.493	1.1	8.1	9.4	0.517	18.5	-2.9	-1.7
 254	Jaren Jackson Jr.\jacksja02	19	MEM	58	56	26.1	0.549	1.1	13.8	16.4	0.591	22.8	-1.2	1.0
@@ -393,7 +393,7 @@
 297	Courtney Lee\leeco01	33	NYK	12	2	13.3	0.500	1.3	4.7	13.7	0.527	15.5	-1.8	1.1
 297	Courtney Lee\leeco01	33	DAL	22	4	12.2	0.457	1.0	3.6	8.3	0.470	15.1	-4.3	0.7
 298	Damion Lee\leeda03	26	GSW	32	0	11.7	0.547	0.4	4.9	11.9	0.578	16.8	-1.2	-1.1
-299	Walt Lemon Jr.\lemonwa01	26	CHI	6	3	27.8	0.448	5.0	14.3	16.3	0.468	26.6	-2.4	0.2
+299	Walter Lemon Jr.\lemonwa01	26	CHI	6	3	27.8	0.448	5.0	14.3	16.3	0.468	26.6	-2.4	0.2
 300	Alex Len\lenal01	25	ATL	77	31	20.1	0.551	1.1	11.1	17.2	0.575	22.1	0.0	-1.3
 301	Kawhi Leonard\leonaka01	27	TOR	60	60	34.0	0.546	3.3	26.6	25.8	0.606	30.3	6.1	1.1
 302	Meyers Leonard\leoname01	26	POR	61	2	14.4	0.649	1.2	5.9	15.8	0.675	14.8	1.5	0.3
@@ -403,7 +403,7 @@
 306	Jeremy Lin\linje01	30	TOT	74	4	19.4	0.491	3.1	9.6	13.5	0.558	21.8	-1.4	-0.9
 306	Jeremy Lin\linje01	30	ATL	51	1	19.7	0.523	3.5	10.7	15.9	0.594	22.6	0.3	-1.0
 306	Jeremy Lin\linje01	30	TOR	23	3	18.8	0.410	2.2	7.0	8.2	0.464	19.8	-5.4	-0.6
-307	Shaun Livingston\livinsh01	33	GSW	64	0	15.1	0.519	1.8	4.0	11.7	0.555	12.0	-1.7	0.7
+307	Shaun Livingston\livinsh01	33	GSW	64	2	15.1	0.519	1.8	4.0	11.7	0.555	12.0	-1.7	0.7
 308	Zach Lofton\loftoza01	26	DET	1	0	4.0	0.000	0.0	0.0	-10.0	0.000	21.6	-17.4	6.0
 309	Kevon Looney\looneke01	22	GSW	80	24	18.5	0.627	1.5	6.3	17.3	0.636	12.8	0.1	0.4
 310	Brook Lopez\lopezbr01	30	MIL	81	81	28.7	0.571	1.2	12.5	14.6	0.597	16.7	0.4	1.8

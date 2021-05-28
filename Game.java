@@ -10,25 +10,23 @@ public class Game{
 	//average rest days of teams
 	private double restDays;
 
+	//starters of game
 	private Player[] starters = new Player[10];
 
+	//spread
 	private double spread;
 
+	//overunder of game
 	private double overUnder;
 
+	//money line
 	private double moneyLine;
 
-	private double totalScore;
+	//All continuous features
+	private ArrayList<Double> allFeatures;
 
-	//number of features
-	private final int numFeatures=1;
-
-	//the values of each feature
-	private boolean[] values;
-
-	//True is over and false is under
-	private boolean label;
-
+	//If true then over
+	private boolean isOver;
 
 	//constructor for the player class
 	public Game(String[] game, ArrayList<Player> allPlayers, ArrayList<Team> allTeams)
@@ -41,8 +39,58 @@ public class Game{
 		restDays = restDaysAverage(game[2],game[3]);
 		//starters first five on home team second five away team
 		starters = getPlayers(game, allPlayers);
+		//spread
+		spread = Math.abs(Double.valueOf(game[14]));
+		//Over/Under
+		overUnder = Double.valueOf(game[16]);
+		//Moenyline
+		moneyLine = Math.abs(Double.valueOf(game[18]));
+		//total combined points
+		double totalScore=Double.valueOf(game[20])+Double.valueOf(game[21]);
+		if (totalScore>overUnder)
+		{
+			isOver = true;
+		}
+		else
+		{
+			isOver = false;
+		}
+
+	}
+
+	public void setAllFeatures()
+	{
+		allFeatures = new ArrayList();
+		//setting averages for team stats
+		for (int i = 0; i<21;i++)
+		{
+			allFeatures.add((teams[0].getFeature(i+2)+teams[1].getFeature(i+2))/2);
+		}
+
+		//setting averages for player stats
+		for (int i = 0; i<13;i++)
+		{
+			if (i!=1)
+			{
+				double temp = 0;
+				for (Player player:starters)
+				{
+					temp = temp+player.getFeature(i+2);
+				}
+				allFeatures.add(temp/10);
+			}
+			
+		}
+		allFeatures.add(spread);
+		allFeatures.add(overUnder);
+		allFeatures.add(moneyLine);
+	}
 
 
+	//Returns the teams where index 0 is home team and index 1 is away team
+	public ArrayList<Double>  getAllFeatures()
+	{
+		return allFeatures;
 	}
 
 	//Returns the teams where index 0 is home team and index 1 is away team
@@ -60,6 +108,25 @@ public class Game{
 		return starters;
 	}
 
+	public double getSpread()
+	{
+		return spread;
+	}
+	
+	public double getOverUnder()
+	{
+		return overUnder;
+	}
+
+	public double getMoneyLine()
+	{
+		return moneyLine;
+	}
+	
+	public Boolean getIsOver()
+	{
+		return isOver;
+	}
 
 
 
@@ -73,12 +140,12 @@ public class Game{
 		//From index 4-13 are the starters
 		for (int i=0;i<10;i++)
 		{
-			System.out.println(game[i+4]);
+			
 			//Normalizing string to avoid conflicts
 			String playerName = OverUnderClassifier.normalizeName(game[i+4]);
 			for (Player player:allPlayers)
 			{
-				if (player.getName().contains(playerName))
+				if (player.getName().contains(playerName)||playerName.contains(player.getName()))
 				{
 					if(i%2==0)
 					{
@@ -91,11 +158,6 @@ public class Game{
 				}
 			}
 		}
-		for (Player i:players)
-		{
-			System.out.println(player.getName());
-		}
-
 
 		//Checking which team and returning it
 		return players;
