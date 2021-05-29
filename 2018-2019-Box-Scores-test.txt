@@ -1,3 +1,21 @@
+Portland	1	Maurice Harkless	Al-Farouq Aminu	Jusuf Nurkic	CJ McCollum	Damian Lillard	3.0	227.0	+120	97
+Boston	B2B	Jayson Tatum	Marcus Morris	Al Horford	Marcus Smart	Kyrie Irving	-3.0	227.0	-140	92
+Washington	3+	Jeff Green	Trevor Ariza	Bobby Portis	Bradley Beal	Tomas Satoransky	4.5	236.5	+188	125
+Brooklyn	1	Joe Harris	Treveon Graham	Jarrett Allen	Caris LeVert	D'Angelo Russell	-4.5	236.5	-225	116
+Golden State	1	Kevin Durant	Draymond Green	Kevon Looney	Klay Thompson	Stephen Curry	-8.5	224.5	-500	125
+Miami	1	Josh Richardson	Kelly Olynyk	Bam Adebayo	Justise Winslow	Dion Waiters	8.5	224.5	+384	126
+Chicago	1	Otto Porter Jr.	Lauri Markkanen	Robin Lopez	Zach LaVine	Kris Dunn	2.0	214.5	+130	109
+Memphis	1	Justin Holiday	Bruno Caboclo	Jonas Valanciunas	Avery Bradley	Mike Conley	-2.0	214.5	-150	107
+Detroit	1	Bruce Brown	Blake Griffin	Andre Drummond	Wayne Ellington	Reggie Jackson	4.0	220.5	+155	93
+San Antonio	3IN4	DeMar DeRozan	LaMarcus Aldridge	Jakob Poeltl	Derrick White	Bryn Forbes	-4.0	220.5	-180	105
+Indiana	1	Bojan Bogdanovic	Thaddeus Young	Myles Turner	Wesley Matthews	Darren Collison	0.0	216.5	-115	101
+Dallas	1	Tim Hardaway Jr.	Dirk Nowitzki	Dwight Powell	Jalen Brunson	Luka Doncic	0.0	216.5	-105	110
+LA Clippers	3IN4	Landry Shamet	Danilo Gallinari	Ivica Zubac	Patrick Beverley	Shai Gilgeous-Alexander	9.0	228.0	+416	105
+Utah	3+	Joe Ingles	Derrick Favors	Rudy Gobert	Donovan Mitchell	Ricky Rubio	-9.0	228.0	-550	111
+Milwaukee	1	Khris Middleton	Giannis Antetokounmpo	Brook Lopez	Malcolm Brogdon	Eric Bledsoe	-5.0	231.0	-260	141
+Sacramento	1	Bogdan Bogdanovic	Harrison Barnes	Willie Cauley-Stein	Buddy Hield	De'Aaron Fox	5.0	231.0	+215	140
+New Orleans	1	Kenrich Williams	Anthony Davis	Julius Randle	Jrue Holiday	Elfrid Payton	4.5	238.5	+245	119
+LA Lakers	1	Brandon Ingram	LeBron James	Kyle Kuzma	Reggie Bullock	Rajon Rondo	-4.5	238.5	-300	125
 Minnesota	3IN4-B2B	Andrew Wiggins	Dario Saric	Karl-Anthony Towns	Josh Okogie	Jeff Teague	3.0	221.5	+145	115
 Indiana	3IN4-B2B	Bojan Bogdanovic	Thaddeus Young	Myles Turner	Wesley Matthews	Darren Collison	-3.0	221.5	-166	122
 Golden State	3IN4-B2B	Alfonzo McKinnie	Draymond Green	DeMarcus Cousins	Klay Thompson	Stephen Curry	-6.5	226.0	-190	96

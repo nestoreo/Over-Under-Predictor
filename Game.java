@@ -25,6 +25,9 @@ public class Game{
 	//All continuous features
 	private ArrayList<Double> allFeatures;
 
+	//feature count
+	private int featureCount;
+
 	//If true then over
 	private boolean isOver;
 
@@ -45,7 +48,8 @@ public class Game{
 		overUnder = Double.valueOf(game[16]);
 		//Moenyline
 		moneyLine = Math.abs(Double.valueOf(game[18]));
-		//total combined points
+
+		//total combined points and setting over under to true or not
 		double totalScore=Double.valueOf(game[20])+Double.valueOf(game[21]);
 		if (totalScore>overUnder)
 		{
@@ -56,10 +60,7 @@ public class Game{
 			isOver = false;
 		}
 
-	}
-
-	public void setAllFeatures()
-	{
+		//allfeatures of game (all the values are continuous double values)
 		allFeatures = new ArrayList();
 		//setting averages for team stats
 		for (int i = 0; i<21;i++)
@@ -77,15 +78,30 @@ public class Game{
 				{
 					temp = temp+player.getFeature(i+2);
 				}
+				//adding average
 				allFeatures.add(temp/10);
 			}
 			
 		}
+		//adding spread
 		allFeatures.add(spread);
+		//adding the moneyLine
 		allFeatures.add(overUnder);
+		//adding the moneyLine
 		allFeatures.add(moneyLine);
+
+		//setting featureCount
+		featureCount=allFeatures.size();
+
 	}
 
+	//returns the feature value at int feature of allFeatures arrayList
+	public int getFeatureCount()
+	{
+		return featureCount;
+	}
+
+	//returns the feature value at int feature of allFeatures arrayList
 	public double getTreeFeature(int feature)
 	{
 		return allFeatures.get(feature);
@@ -108,26 +124,32 @@ public class Game{
 	{
 		return restDays;
 	}
+
+	//returns the starters of game
 	public Player[] getStarters()
 	{
 		return starters;
 	}
 
+	//returns the game spread
 	public double getSpread()
 	{
 		return spread;
 	}
 	
+	//returns the over under
 	public double getOverUnder()
 	{
 		return overUnder;
 	}
 
+	//returns the moneyLine
 	public double getMoneyLine()
 	{
 		return moneyLine;
 	}
 	
+	//returns whether the game went over or not
 	public Boolean getIsOver()
 	{
 		return isOver;
@@ -140,18 +162,20 @@ public class Game{
 	//Takes in a team name and list of team objects and returns the correct team object
 	private static Player[] getPlayers(String[] game, ArrayList<Player> allPlayers)
 	{
+		//10 starters of game
 		Player[] players = new Player[10];
 
 		//From index 4-13 are the starters
 		for (int i=0;i<10;i++)
 		{
-			
 			//Normalizing string to avoid conflicts
 			String playerName = OverUnderClassifier.normalizeName(game[i+4]);
 			for (Player player:allPlayers)
 			{
+				//matching players from box score dataset to player stats dataset
 				if (player.getName().contains(playerName)||playerName.contains(player.getName()))
 				{
+					//adding to correct position to order players
 					if(i%2==0)
 					{
 						players[Integer.valueOf(i/2)] = player;
@@ -159,6 +183,7 @@ public class Game{
 					else{
 						players[Integer.valueOf(i/2+5)] = player;
 					}
+					//breaking if we found player
 					break;
 				}
 			}
@@ -185,25 +210,29 @@ public class Game{
 		return null;
 	}
 
+	//turns keys of restdays for two teams to a number and gets average between teams
 	private static double restDaysAverage(String firstTeam, String secondTeam)
 	{
+		//first team rest
 		double restFirst;
+		//second team rest
 		double restSecond;
 
-		if(firstTeam.equals("3+"))
+
+		if(firstTeam.equals("3+"))//3+ days rest
 			restFirst = 3.0;
-		else if(firstTeam.equals("2"))
+		else if(firstTeam.equals("2"))//2 days rest
 			restFirst = 2.5;
-		else if(firstTeam.equals("1"))	
+		else if(firstTeam.equals("1"))	//1 day rest
 			restFirst = 2.0;
-		else if(firstTeam.equals("3IN4"))
+		else if(firstTeam.equals("3IN4"))//3 games in 4 nights 1 day rest
 			restFirst = 1.5;
-		else if(firstTeam.equals("B2B"))
+		else if(firstTeam.equals("B2B"))//back to back no days rest
 			restFirst = 1.0;
-		else
+		else//3 games in 4 night back to back no days rest
 			restFirst = 0.5;
 
-
+		//same as above for team 2
 		if(secondTeam.equals("3+"))
 			restSecond = 3.0;
 		else if(secondTeam.equals("2"))
@@ -217,6 +246,7 @@ public class Game{
 		else
 			restSecond = 0.5;
 
+		//returning average
 		return (restFirst+restSecond)/2;
 	}
 

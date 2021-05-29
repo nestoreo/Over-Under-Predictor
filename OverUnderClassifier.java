@@ -6,10 +6,7 @@ import java.text.Normalizer;
 
 public class OverUnderClassifier {
 
-	//Random number generator
-	static Random random = new Random();
-
-	//Constants
+	//CONSTANTS
 
 	//AllPlayers that started game
 	static ArrayList<Player> allPlayers;
@@ -25,43 +22,45 @@ public class OverUnderClassifier {
 	static int featureCount;
 	//Entropy of the training examples
 	static double exampleEntropy;
-
 	//training examples
 	static ArrayList<Example> trainExamples;
-	//
+	//the split points of the data at each feature
 	static double[] splitPoints;
 
 
 
 
-	//processing data
+	//Training data and running
 	public static void main(String[] args) throws FileNotFoundException {
-
-		classifyExamples();
-	}
-
-	private static void classifyExamples() throws FileNotFoundException {
-
 		//Populating stats of all players
 		allPlayers = loadPlayers("2018-2019-Player-Stats.txt");
 		
 		//Populating stats of all teams
 		allTeams = loadTeams("2018-2019-Team-Stats.txt");
-		
-		//Populating all games in the training set
+
+		//classifying data
+		classifyExamples();
+	}
+
+	//Trains data and runs testing examples
+	private static void classifyExamples() throws FileNotFoundException {
+
+		//Populating all games in the training set (912 games in training set some are thrown out
+		//in loadGames because they did not go over or under but were exact)
 		ArrayList<Game> trainingGames = loadGames("2018-2019-Box-Scores-train.txt");
 
 		//Updating example count
 		exampleCount = trainingGames.size();
+		
+
 		//updating overCount
 		overExampleCount=0;
 		//updating underCount
 		underExampleCount =0;
 
+		//setting counts
 		for (Game game:trainingGames)
 		{
-			game.setAllFeatures();
-
 			//updating counts
 			if (game.getIsOver())
 			{
@@ -74,53 +73,62 @@ public class OverUnderClassifier {
 		}
 
 		//feature count
-		featureCount = trainingGames.get(0).getAllFeatures().size();
+		featureCount = trainingGames.get(0).getFeatureCount();
+
 		//updating entropy of training set
 		exampleEntropy = getEntropy((double)overExampleCount/(exampleCount));
-		System.out.println("exampleCount: "+exampleCount+" underCount: "+underExampleCount+" overCount: "+overExampleCount+" Entropy of Examples: "+exampleEntropy);
-		
-		System.out.println(trainingGames.get(0).getAllFeatures());
 
+		//setting splitPoints based on infoGain
 		splitPoints = new double[featureCount];
 		for (int i=0; i<featureCount;i++)
 		{
+			//saves the best split point to categorize the data
 			splitPoints[i] = getBestSplitPoint(i,trainingGames);
-			System.out.println(getBestSplitPoint(i,trainingGames));
 		}
 
 
-
+		//Creates the examples from the trainingGames
 		trainExamples = loadExamples(trainingGames);
 		
-
+		//creating decision tree
 		DecisionTree tree = new DecisionTree();
 
+		//training with our examples
 		tree.train(trainExamples);
 
+		//printing tree
 		tree.print();
 
+		//loading the games
 		ArrayList<Game> testGames = loadGames("2018-2019-Box-Scores-test.txt");
+
+		//counts for test examples
+		int overTestCount =0;
+		int underTestCount=0;
+		//figuring out their counts
 		for (Game game:testGames)
 		{
-			game.setAllFeatures();
-
 			//updating counts
 			if (game.getIsOver())
 			{
-				overExampleCount++;
+				overTestCount++;
 			}
 			else{
-				underExampleCount++;
+				underTestCount++;
 			}
 			
 		}
+		//loading the test examples from test games
 		ArrayList<Example> testExamples = loadExamples(testGames);
 
+		//checking the accuracy of each
 		int correctOver = 0;
 		int correctUnder = 0;
 
+		//classifying examples and checking is correct
 		for (Example ex: testExamples)
 		{
+			//if correct classifiction increment counts
 			if (tree.classify(ex))
 			{
 				if (ex.getLabel())
@@ -129,31 +137,46 @@ public class OverUnderClassifier {
 					correctUnder++;
 			}
 		}
-		System.out.println("Accuracy: "+((double)correctOver+correctUnder)/testExamples.size());
+		//printing accuracy stats
+		System.out.println("Accuracy of total test examples: "+((double)correctOver+correctUnder)/(overTestCount+underTestCount));
+		System.out.println("Accuracy of over test examples: "+((double)correctOver)/overTestCount);
+		System.out.println("Accuracy of under test examples: "+((double)correctUnder)/underTestCount);
+
 	}
 
+	//Creating examples list from games
 	private static ArrayList<Example> loadExamples(ArrayList<Game> games)
 	{
+		//returning the correct examples
 		ArrayList<Example> examples = new ArrayList<Example>();
 
+		//creating each game to an examples
 		for (int i=0;i<games.size();i++)
 		{
+			//adding it and setting feature count
 			examples.add(new Example(featureCount));
+			//setting label
 			examples.get(i).setLabel(games.get(i).getIsOver());
+			//setting each individual feature
 			for(int j =0;j<featureCount;j++)
 			{
+
+				//true if value is greater than splitPoint
 				if (games.get(i).getTreeFeature(j)>splitPoints[j])
 					examples.get(i).setFeatureValue(j,true);
-				else
+				else//false if less than (SplitPoints can never equal a value because they are midpoints)
 					examples.get(i).setFeatureValue(j,false);
 			}
 		}
 		return examples;
 	}
 
+	//returns the best splitPoint given games and which feature
 	private static double getBestSplitPoint(int feature, ArrayList<Game> games)
 	{
+		//size of games
 		int size = games.size();
+		//selection sort in order to sort games by that exact feature in order to find midpoints effectively
 		for(int i = 0; i <size;i++)
 		{
 			for (int j=i+1;j<size;j++)
@@ -166,52 +189,70 @@ public class OverUnderClassifier {
 				}
 			}
 		}
+
+		//finding the best split point
+		//highest info gain
 		double highestInfoGain = 0;
+		//best split
 		double bestSplit=0;
+		//Going through all games and checking the info gain if we split features at that midpoint
 		for (int i = 0; i<size-1;i++)
 		{
+			//checking next feature does not equal this feature value
 			if (games.get(i).getTreeFeature(feature)!=games.get(i+1).getTreeFeature(feature))
 			{
+				//midpoint
 				double tempSplit = (games.get(i).getTreeFeature(feature)+games.get(i+1).getTreeFeature(feature))/2;
-
+				//checking if infoGain is better than previous best
 				if (getInfoGain(feature,tempSplit,games)>highestInfoGain)
 				{
+					//if so save that gain and the split
 					bestSplit = tempSplit;
 					highestInfoGain = getInfoGain(feature, bestSplit, games);
 					
 				}
 			}
 		}
+		//returning best split at feature
 		return bestSplit;
 	}
 
+	//returns information gain
 	private static double getInfoGain(int feature, double splitPoint, ArrayList<Game> games){
 
 		return exampleEntropy - getRemainingEntropy(feature,splitPoint, games);
 	}
 
-
+	//returns the remaining entropy based on the feature split point and the games
 	private static double getRemainingEntropy(int feature, double splitPoint, ArrayList<Game> games){
 
+		//games where feature is over split point
 		ArrayList<Game> trueFeatures = new ArrayList<Game>();
-
+		//games where feature is under split point
 		ArrayList<Game> falseFeatures = new ArrayList<Game>();
 
+		//Count of overs when feature is true (or over split point)
 		int overTrueFeat = 0;
+		//count of overs when feature is false (or under split point)
 		int overFalseFeat = 0;
 
+		//setting up the variables above
 		for (Game game:games)
 		{
+			//checking where feature is true
 			if (game.getTreeFeature(feature)>splitPoint)
 			{
 				trueFeatures.add(game);
+				//checking if feature is over
 				if (game.getIsOver())
 				{
 					overTrueFeat++;
 				}
 			}
+			//checking wwhether feature is true
 			else{
 				falseFeatures.add(game);
+				//checking if feature is over
 				if(game.getIsOver())
 				{
 					overFalseFeat++;
@@ -225,19 +266,22 @@ public class OverUnderClassifier {
 		//probability of being less than the split point at feature
 		double falseProbability = falseFeatures.size()/exampleCount;
 
-
+		//entropy of examples where feature is true
 		double entropyFeatTrue = getEntropy((double)overTrueFeat/trueFeatures.size());
 
+		//entropy where feature is false
 		double entropyFeatFalse = getEntropy((double)overFalseFeat/falseFeatures.size());
 
 		return trueProbability*entropyFeatTrue+falseProbability*entropyFeatFalse;
 
 	}
 
+	//returns log_2 of d
 	private static double log2(double d){
 		return Math.log(d)/Math.log(2);
 	}
 
+	//reuturns entropy or 0 if probability = 0 or 1
 	private static double getEntropy(double probability){
 		//if the probability of yes is 0 or 1, it automatically returns 0 entropy
 		if (probability==0||probability==1)
@@ -249,24 +293,26 @@ public class OverUnderClassifier {
 		return -log2(probability)*(probability)-log2(1-probability)*(1-probability);
 	}
 
-
-
-	
+	//returns the games given in the data set
 	private static ArrayList<Game> loadGames(String data) throws FileNotFoundException {
 
+		//used  to look through data
 		Scanner scan = new Scanner(new File(data));
-
+		//allGames we will return
 		ArrayList<Game> allGames = new ArrayList();
 
-
+		//check if there are more games
 		while (scan.hasNextLine())
 		{
+			//one game has two lines
 			String line1 = scan.nextLine();
 			String line2 = scan.nextLine();
 
+			//splitting each line
 			String[] gameSplit1 = line1.split("\t");
 			String[] gameSplit2 = line2.split("\t");
 			
+			//adding the two arrays in a strategic way to make it easier to organize later
 			String[] game = new String[gameSplit1.length*2];
 			for (int i=0;i<gameSplit1.length;i++)
 			{
@@ -278,34 +324,15 @@ public class OverUnderClassifier {
 			//Making sure that the overUnder did not equal the final score
 			double totalScore=Double.valueOf(game[20])+Double.valueOf(game[21]);
 			double overUnder = Double.valueOf(game[16]);
+			//if it equals we throw it out
 			if (totalScore!=overUnder)
 			{
 				allGames.add(new Game(game, allPlayers, allTeams));
-			}
-
-			
-			
+			}			
 		}
 
-		/*
-		for (Game g: allGames)
-		{
-			System.out.println("Home: "+g.getTeams()[0].getTeamName()+" vs. Away: "+g.getTeams()[1].getTeamName());
-			System.out.println("Rest Days Average: "+g.getRestDays());
-			System.out.println("Moneyline: "+g.getMoneyLine());
-			System.out.println("isOver: "+g.getIsOver());
-			System.out.println("spread: "+g.getSpread());
-			System.out.println("OverUnder: "+g.getOverUnder());
-
-			for (Player player:g.getStarters())
-			{
-				System.out.println("Starter: "+player.getName());
-			}
-
-		}*/
-
-		
 		scan.close();
+		//return games
 		return allGames;
 	}
 

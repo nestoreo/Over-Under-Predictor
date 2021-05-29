@@ -1,6 +1,3 @@
-//I have neither given nor received any unauthorized aid on this assignment.
-//-Nestor Orozco-Llamas
-
 import java.util.ArrayList;
 
 
@@ -32,12 +29,7 @@ public class DecisionTree {
 		train(root, numFeatures);
 	}
 
-	/**
-	 * TODO: Complete this methods
-	 * The recursive train method that builds a tree at TreeNode node
-	 * @param node: current node to train
-	 * @param numFeatures: total number of features
-	 */
+	//trains the tree
 	private void train(TreeNode node, int numFeatures){
 
 		//First base case is no examples left at all
@@ -105,12 +97,7 @@ public class DecisionTree {
 	}
 
 
-	/**
-	 * TODO: Complete this method
-	 * Creates the true and false children of TreeNode node
-	 * @param node: node at which to create children
-	 * @param numFeatures: total number of features
-	 */
+	//create the children of the node
 	private void createChildren(TreeNode node, int numFeatures){
 
 		//Getting true features for true examples
@@ -133,14 +120,7 @@ public class DecisionTree {
 	}
 
 
-	/**
-	 * TODO: Complete this method
-	 * Computes and returns the remaining entropy if feature is chosen
-	 * at node.
-	 * @param feature: the feature number
-	 * @param node: node at which to find remaining entropy
-	 * @return remaining entropy at node
-	 */
+	//returns the remaing entropy at node for feature
 	private double getRemainingEntropy(int feature, TreeNode node){
 		//getting all remaining examples to search through
 		ArrayList<Example> allExamples = new ArrayList();
@@ -186,12 +166,7 @@ public class DecisionTree {
 
 	}
 
-	/**
-	 * TODO: complete this method
-	 * Computes the entropy of a node given the probability of yes examples
-	 * @param probability: probability of the yes example
-	 * @return - entropy
-	 */
+	//returns entopy given the probability
 	private double getEntropy(double probability){
 		//if the probability of yes is 0 or 1, it automatically returns 0 entropy
 		if (probability==0||probability==1)
@@ -203,21 +178,12 @@ public class DecisionTree {
 		return -log2(probability)*(probability)-log2(1-probability)*(1-probability);
 	}
 
-	/**
-	 * Computes log_2(d) (To be used by the getEntropy() method)
-	 * @param d - value
-	 * @return log_2(d)
-	 */
+	//return log 2 of d
 	private double log2(double d){
 		return Math.log(d)/Math.log(2);
 	}
 
-	/**
-	 * TODO: complete this method
-	 * Classifies example e using the learned decision tree
-	 * @param e: example
-	 * @return true if e is predicted to be  positive,  false otherwise
-	 */
+	//classifies example
 	public boolean classify(Example e){
 		//start at the root
 		TreeNode currentNode = root;
@@ -323,13 +289,9 @@ public class DecisionTree {
 		return examples;
 	}
 
-
-
-	//----------DO NOT MODIFY CODE BELOW------------------
 	public void print(){
 		printTree(root, 0);
 	}
-
 
 
 	private void printTree(TreeNode node, int indent){
@@ -351,7 +313,6 @@ public class DecisionTree {
 			printTree(node.falseChild, indent+1);
 		}
 	}
-
 	private void doIndents(int indent){
 		for(int i=0; i<indent; i++)
 			System.out.print("\t");

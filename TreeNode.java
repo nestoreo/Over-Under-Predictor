@@ -1,7 +1,3 @@
-//I have neither given nor received any unauthorized aid on this assignment.
-//-Nestor Orozco-Llamas
-
-
 // represents a node of the decision tree
 
 import java.util.*;
@@ -30,9 +26,7 @@ public class TreeNode {
 	}
 
 
-	/**
-	 * Copy the features used until this node, from this node's parent
-	 */
+	// Copies the features used until this node	 
 	private void copyParentsFeaturesUsed(int features){
 		featuresUsed = new boolean[features];
 		if(parent==null){
@@ -45,33 +39,23 @@ public class TreeNode {
 		}
 	}
 
-	/**
-	 * returns whether or not the input feature i has already been used in the tree
-	 * @param i - the feature
-	 * @return - true if i has been used already and false otherwise
-	 */
+	//returns feature used at i
 	public boolean featureUsed(int i){
 		return featuresUsed[i];
 	}
 
-	/**
-	 * Set feature f to be the one to split this node on
-	 * @param f - feature
-	 */
+	//returns the splitFeature at f
 	public void setSplitFeature(int f){
 		splitFeature = f;
 		featuresUsed[f] = true;
 	}
 
-	/** return the feature this node is split with
-	 * @return - index of split feature
-	 */
+	// returns the feature this node is split with
 	public int getSplitFeature(){
 		return splitFeature;
 	}
 
 	public String toString(){
-
 		return splitFeature + " \t " + pos.size() + " \t " + neg.size() + "\t " + parent.splitFeature;
 	}
 }
