@@ -89,6 +89,7 @@ public class Game{
 		allFeatures.add(overUnder);
 		//adding the moneyLine
 		allFeatures.add(moneyLine);
+		allFeatures.add(restDays);
 
 		//setting featureCount
 		featureCount=allFeatures.size();
