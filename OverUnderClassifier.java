@@ -12,6 +12,10 @@ public class OverUnderClassifier {
 	static ArrayList<Player> allPlayers;
 	//All teams
 	static ArrayList<Team> allTeams;
+	//AllPlayers that started game
+	static ArrayList<Player> allPlayersNew;
+	//All teams
+	static ArrayList<Team> allTeamsNew;
 	//number of training examples
 	static int exampleCount;
 	//number of training examples
@@ -38,6 +42,7 @@ public class OverUnderClassifier {
 		//Populating stats of all teams
 		allTeams = loadTeams("2018-2019-Team-Stats.txt");
 
+		
 		//classifying data
 		classifyExamples();
 	}
@@ -47,7 +52,7 @@ public class OverUnderClassifier {
 
 		//Populating all games in the training set (912 games in training set some are thrown out
 		//in loadGames because they did not go over or under but were exact)
-		ArrayList<Game> trainingGames = loadGames("2018-2019-Box-Scores-train.txt");
+		ArrayList<Game> trainingGames = loadGames("2018-2019-Box-Scores-train.txt", allPlayers, allTeams);
 
 		//Updating example count
 		exampleCount = trainingGames.size();
@@ -97,10 +102,10 @@ public class OverUnderClassifier {
 		tree.train(trainExamples);
 
 		//printing tree
-		tree.print();
+		//tree.print();
 
 		//loading the games
-		ArrayList<Game> testGames = loadGames("2018-2019-Box-Scores-test.txt");
+		ArrayList<Game> testGames = loadGames("2018-2019-Box-Scores-test.txt", allPlayers, allTeams);
 
 		//counts for test examples
 		int overTestCount =0;
@@ -124,7 +129,7 @@ public class OverUnderClassifier {
 		//checking the accuracy of each
 		int correctOver = 0;
 		int correctUnder = 0;
-
+		int incorrect = 0;
 		//classifying examples and checking is correct
 		for (Example ex: testExamples)
 		{
@@ -134,14 +139,168 @@ public class OverUnderClassifier {
 				if (ex.getLabel())
 					correctOver++;
 				else
+					incorrect ++;
+			}
+			else {
+				if (!ex.getLabel())
 					correctUnder++;
+				else
+					incorrect ++;
 			}
 		}
 		//printing accuracy stats
 		System.out.println("Accuracy of total test examples: "+((double)correctOver+correctUnder)/(overTestCount+underTestCount));
 		System.out.println("Accuracy of over test examples: "+((double)correctOver)/overTestCount);
 		System.out.println("Accuracy of under test examples: "+((double)correctUnder)/underTestCount);
+		System.out.println("Total incorrect examples: "+ incorrect);
 
+		//Populating stats of all players
+		allPlayersNew = loadPlayers("2021-2022-Player-Stats.txt");
+		
+		//Populating stats of all teams
+		allTeamsNew = loadTeams("2021-2022-Team-Stats.txt");
+
+		ArrayList<Game> testGame2 = loadGames("testgames.txt", allPlayersNew, allTeamsNew);
+		ArrayList<Example> testExample2 = loadExamples(testGame2);
+		String outcome = "over";
+		if (!tree.classify(testExample2.get(1)))
+		{
+			outcome = "under";
+		}
+		System.out.println("The Over/Under Classification of this game is : " + outcome);
+
+
+//counts for test examples
+		 overTestCount =0;
+		 underTestCount=0;
+		//figuring out their counts
+		for (Game game:testGame2)
+		{
+			//updating counts
+			if (game.getIsOver())
+			{
+				overTestCount++;
+			}
+			else{
+				underTestCount++;
+			}
+			
+		}
+
+		//checking the accuracy of each
+		 correctOver = 0;
+		 correctUnder = 0;
+		 incorrect = 0;
+		//classifying examples and checking is correct
+		for (Example ex: testExample2)
+		{
+			//if correct classifiction increment counts
+			if (tree.classify(ex))
+			{
+				if (ex.getLabel())
+					correctOver++;
+				else
+					incorrect ++;
+			}
+			else {
+				if (!ex.getLabel())
+					correctUnder++;
+				else
+					incorrect ++;
+			}
+		}
+		//printing accuracy stats
+		System.out.println("Accuracy of total test examples: "+((double)correctOver+correctUnder)/(overTestCount+underTestCount));
+		System.out.println("Accuracy of over test examples: "+((double)correctOver)/overTestCount);
+		System.out.println("Accuracy of under test examples: "+((double)correctUnder)/underTestCount);
+		System.out.println("Total incorrect examples: "+ incorrect);
+
+
+
+		// while(true){
+
+		// 	//used  to look through data
+		// 	Scanner scan = new Scanner(System.in);
+		// 	//allGames we will return
+
+		// 	//check if there are more games
+		// 	System.out.println("Enter Team 1: ");
+		// 	//one game has two lines
+		// 	String team1 = scan.nextLine();
+
+		// 	//check if there are more games
+		// 	System.out.println("Enter Team 2: ");
+		// 	//one game has two lines
+		// 	String team2 = scan.nextLine();
+
+		// 	System.out.println("Enter Team 1 Rest (3+, 2, 1, 3IN4, B2B, 3IN4-B2B): ");
+		// 	String t1rest = scan.nextLine();
+
+		// 	System.out.println("Enter Team 2 Rest (3+, 2, 1, 3IN4, B2B, 3IN4-B2B): ");
+		// 	String t2rest = scan.nextLine();
+
+		// 	System.out.println("Enter Team 1 Starters (comma separated): ");
+		// 	String t1starters = scan.nextLine();
+
+		// 	System.out.println("Enter Team 2 Starters (comma separated): ");
+		// 	String t2starters = scan.nextLine();
+
+
+		// 	System.out.println("Spread :");
+		// 	String t1spread = scan.nextLine();
+
+		// 	System.out.println("Over/Under");
+		// 	String gOverUnder = scan.nextLine();
+
+		// 	System.out.println("Money Line for Team 1: ");
+		// 	String gmoneyline1 = scan.nextLine();
+
+		// 	System.out.println("Money Line for Team 2: ");
+		// 	String gmoneyline2 = scan.nextLine();
+
+		// 	scan.close();
+
+		// 	String[] game = new String[22];
+
+		// 	game[0] = team1;
+		// 	game[1] = team2;
+		// 	game[2] = t1rest;
+		// 	game[3] = t2rest;
+		// 	game = addToArray(game, t1starters.split(","), 4); 
+		// 	game = addToArray(game, t2starters.split(","), 9); 
+		// 	game[14] = t1spread;
+		// 	game[15] = t1spread;
+		// 	game[16] = gOverUnder;
+		// 	game[17] = gOverUnder;
+		// 	game[18] = gmoneyline1;
+		// 	game[19] = gmoneyline2;
+		// 	game[20] = "0";
+		// 	game[21] = "0";
+
+		// 	//System.out.println(game[0]+" "+game[1]+" "+game[2]+" "+game[3]+" "+game[4]+" "+game[5]+" "+game[6]+" "+game[7]+" "+game[8]+" "+game[9]+" "+game[10]+" "+game[11]+" "+game[12]+" "+game[13]+" "+game[14]+" "+game[15]+" "+game[16]+" "+game[17]+" "+game[18]+" "+game[19]+" "+ game[20]+" "+game[21]);
+		// 	ArrayList<Game> testGame = new ArrayList();
+		// 	testGame.add(new Game(game, allPlayersNew, allTeamsNew));
+
+		// 	ArrayList<Example> testExample = loadExamples(testGames);
+
+		// 	String outcome = "over";
+		// 	if (!tree.classify(testExample.get(0)))
+		// 	{
+		// 		outcome = "under";
+		// 	}
+		// 	System.out.println("The Over/Under Classification of this game is : " + outcome);
+
+		// }
+	}
+
+	private static String[] addToArray( String[] array1, String[] array2, int index)
+	{
+		for (int i =index; i < index+array2.length; i++)
+		{
+			array1[i] = array2[i-index];
+		}
+
+		return array1;
 	}
 
 	//Creating examples list from games
@@ -294,7 +453,7 @@ public class OverUnderClassifier {
 	}
 
 	//returns the games given in the data set
-	private static ArrayList<Game> loadGames(String data) throws FileNotFoundException {
+	private static ArrayList<Game> loadGames(String data, ArrayList<Player> players, ArrayList<Team> teams) throws FileNotFoundException {
 
 		//used  to look through data
 		Scanner scan = new Scanner(new File(data));
@@ -327,7 +486,7 @@ public class OverUnderClassifier {
 			//if it equals we throw it out
 			if (totalScore!=overUnder)
 			{
-				allGames.add(new Game(game, allPlayers, allTeams));
+				allGames.add(new Game(game, players, teams));
 			}			
 		}
 

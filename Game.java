@@ -42,12 +42,13 @@ public class Game{
 		restDays = restDaysAverage(game[2],game[3]);
 		//starters first five on home team second five away team
 		starters = getPlayers(game, allPlayers);
+
 		//spread
 		spread = Math.abs(Double.valueOf(game[14]));
 		//Over/Under
 		overUnder = Double.valueOf(game[16]);
 		//Moenyline
-		moneyLine = Math.abs(Double.valueOf(game[18]));
+		moneyLine = (Math.abs(Double.valueOf(game[18]))+Math.abs(Double.valueOf(game[18])))/2;
 
 		//total combined points and setting over under to true or not
 		double totalScore=Double.valueOf(game[20])+Double.valueOf(game[21]);
@@ -170,7 +171,11 @@ public class Game{
 		for (int i=0;i<10;i++)
 		{
 			//Normalizing string to avoid conflicts
+			//System.out.println(game[i+4]);
+
 			String playerName = OverUnderClassifier.normalizeName(game[i+4]);
+			
+
 			for (Player player:allPlayers)
 			{
 				//matching players from box score dataset to player stats dataset
@@ -189,6 +194,7 @@ public class Game{
 				}
 			}
 		}
+			//System.out.println(players[0].getName()+" "+ players[1].getName()+" "+players[2].getName()+" "+players[3].getName()+" "+players[4].getName()+" "+players[5].getName()+" "+players[6].getName()+" "+players[7].getName()+" "+players[8].getName()+" "+players[9].getName());
 
 		//Checking which team and returning it
 		return players;
@@ -199,15 +205,18 @@ public class Game{
 	{
 		//Normalizing string to avoid conflicts
 		teamName = OverUnderClassifier.normalizeName(teamName);
-
 		//Checking which team and returning it
 		for (Team team:allTeams)
 		{
 			if (team.getTeamName().contains(teamName))
 			{
+				//System.out.println(team.getTeamName());
+
 				return team;
 			}
 		}
+		System.out.println("null");
+
 		return null;
 	}
 

@@ -1,0 +1,4 @@
+Golden State	1	Andrew Wiggins	Draymond Green	Kevon Looney	Klay Thompson	Stephen Curry	6	215.5	255	126
+Dallas	1	Luka Doncic	Dorian Finney-Smith	Dwight Powell	Jalen Brunson	Reggie Bullock	6	215.5	205	117
+Golden State	1	Andrew Wiggins	Draymond Green	Kevon Looney	Klay Thompson	Stephen Curry	5.5	216.5	225	112
+Dallas	1	Luka Doncic	Dorian Finney-Smith	Dwight Powell	Jalen Brunson	Reggie Bullock	5.5	216.5	185	87
